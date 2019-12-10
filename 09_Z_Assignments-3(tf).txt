@@ -1,7 +1,7 @@
 Adding Maps and Lookups in your Terraform files
 The lab files can be found @ https://github.com/satyensingh/terraform-assignment-resources.git
 In the repo you will find main.tf, outputs.tf, and variables.tf.
-Add a new variable called env. Set a description to ìenv: dev or prodî.
+Add a new variable called env. Set a description to ‚Äúenv: dev or prod‚Äù.
 Convert the type from image_name to map.
 
 Change the default to use key/value pairs. Set dev to ghost:latest and prod to ghost:alpine.
@@ -27,9 +27,31 @@ Open a browser and navigate to the public IP. This should pull up the production
 Open a browser tab and navigate to the public IP on port 8080. This should pull up the development environment.
 
 
+#Note:DEV
+
+vi main.tf
+
+# Download the latest Ghost Image
+resource "docker_image" "image_id"{
+  name = "${var.image_name["${var.env}"]}"
+}
+
+# Start the Container
+resource "docker_container" "container_id" {
+  name  = "${var.container_name["${var.env}"]}"
+  image = "${docker_image.image_id.latest}"
+  ports {
+    internal = "2368"
+    external = "${var.ext_port["${var.env}"]}"
+  }
+}
+
+
+vi variables.tf
+
 #Define variables
 variable "image_name" {
-  type= "map"
+  type = "map"
   description = "Image for container."
   default     = {
   dev         = "ghost:latest"
@@ -38,7 +60,7 @@ variable "image_name" {
 }
 
 variable "container_name" {
-  type= "map" 
+  type = "map"
   description = "Name of the container."
   default     = {
   dev         = "blog_dev"
@@ -47,7 +69,7 @@ variable "container_name" {
 }
 
 variable "ext_port" {
-  type= "map"
+  type = "map"
   description = "External port for container."
   default     =  {
   dev         = "8080"
@@ -55,11 +77,120 @@ variable "ext_port" {
   }
 }
 
-variable "env"
-  type= "map"
+variable "env" {
+
   description = "env: dev or prod."
-  default     = {
-    dev       = "dev"
-	prod      = "prod"
-	}
+  default     = "dev"
 }
+
+
+vi outputs.tf
+
+#Output the IP Address of the Container
+output "ip_address" {
+  value       = "${docker_container.container_id.ip_address}"
+  description = "The IP for the container."
+}
+
+output "container_name" {
+  value       = "${docker_container.container_id.name}"
+  description = "The name of the container."
+}
+
+
+terraform init
+terraform validate
+terraform apply
+terraform destroy
+
+terraform workspace list
+terraform workspace new dev
+terraform workspace select dev
+
+terraform plan -out=tfdev_plan -var "env=dev"
+terraform apply tfdev_plan
+
+
+#Note:PROD
+
+vi main.tf
+
+# Download the latest Ghost Image
+resource "docker_image" "image_id"{
+  name = "${var.image_name["${var.env}"]}"
+}
+
+# Start the Container
+resource "docker_container" "container_id" {
+  name  = "${var.container_name["${var.env}"]}"
+  image = "${docker_image.image_id.latest}"
+  ports {
+    internal = "2368"
+    external = "${var.ext_port["${var.env}"]}"
+  }
+}
+
+
+vi variables.tf
+
+#Define variables
+variable "image_name" {
+  type = "map"
+  description = "Image for container."
+  default     = {
+  dev         = "ghost:latest"
+  prod        = "ghost:alpine"
+  }
+}
+
+variable "container_name" {
+  type = "map"
+  description = "Name of the container."
+  default     = {
+  dev         = "blog_dev"
+  prod        = "blog_prod"
+  }
+}
+
+variable "ext_port" {
+  type = "map"
+  description = "External port for container."
+  default     =  {
+  dev         = "8080"
+  prod        = "80"
+  }
+}
+
+variable "env" {
+
+  description = "env: dev or prod."
+  default     = "prod"
+}
+
+
+vi outputs.tf
+
+#Output the IP Address of the Container
+output "ip_address" {
+  value       = "${docker_container.container_id.ip_address}"
+  description = "The IP for the container."
+}
+
+output "container_name" {
+  value       = "${docker_container.container_id.name}"
+  description = "The name of the container."
+}
+
+
+
+terraform init
+terraform validate
+terraform apply
+terraform destroy
+
+terraform workspace list
+terraform workspace new dev
+terraform workspace select dev
+
+terraform plan -out=tfdev_plan -var "env=dev"
+terraform apply tfdev_plan
