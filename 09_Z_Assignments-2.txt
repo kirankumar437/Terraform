@@ -21,4 +21,54 @@ image_name = ghost:alpine
 ext_port = 8080
 Output the plan to a file called tfplan.
 
-Then apply the plan using tfplan and make sure that the apply doesn’t prompt for input.
+Then apply the plan using tfplan and make sure that the apply doesnâ€™t prompt for input.
+
+
+
+vi main.tf
+
+# Download the latest Ghost Image
+resource "docker_image" "image_id" {
+  name = "${var.image_name}"
+}
+
+# Start the Container
+resource "docker_container" "container_id" {
+  name  = "${var.container_name}"
+  image = "${docker_image.image_id.latest}"
+  ports {
+    internal = "2368"
+    external = "${var.ext_port}"
+  }
+}
+
+vi variables.tf
+
+#Define variables
+variable "image_name" {
+  description = "Image for container."
+  default     = "ghost:latest"
+}
+
+variable "container_name" {
+  description = "Name of the container."
+  default     = "ghost_blog"
+}
+
+variable "ext_port" {
+  description = "External port for container."
+  default     = "80"
+}
+
+
+terraform init
+terraform validate
+terraform apply
+terraform destroy
+
+#Output the plan to a file called tfplan.
+terraform plan -out=tfplan
+
+
+#Then apply the plan using tfplan
+terraform apply tfplan
