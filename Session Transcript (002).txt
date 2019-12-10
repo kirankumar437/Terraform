@@ -1,0 +1,517 @@
+DevOps:-
+DevOps = Development + Operations
+
+What was happening before DevOps, When Dev and Ops were working saperately?
+Dev - My Job is to release new features as early as possible - I am working for "Speed".
+Ops - My Job is to keep the production app up and running all the time - I am working for "Stability".
+
+But, In reality Speed and Stability is inversely proportional to each other.
+
+Dev and Ops were working against each other.
+
+In DevOps, We merge these 2 teams and ask them to work for Speed and Stability together.
+DevOps Engineer's job to deliver Speed with Stability. Both. Having same goal.
+Not working against each other but, together.
+
+Before DevOps:
+The big problem in delayed delivery of software was 
+	"It works on my Machine!"  -Developer
+
+And the reason for this was majorly "An Infrastructure Problem".
+E.g. 1. OS versions/Patches were not same in Production as that in Development
+     2. Library used in Production may have different version during Development
+     3. Dependencies may also change when shipping code from Development to Production.
+
+Solution:-
+	1. write a mail to Ops team stating all the correct versions required for running the app
+	2. Create a Documentation and share it with Ops team with all the correct Configuartions
+
+The above 2 solutions will not work always, as their is Human involved in it. Human's tend to make mistakes.
+
+So, The solution is to Automate the above Communication with Ops team.
+
+
+write a code which will define the infrastructure and provision the it as well - "Infrasructure as a Code"
+
+What is IaaC/IaC?
+	Writing the script to spin up the environment to run the app in it.
+	It is a part of Software Development.
+	It is a part of Source Code of the application.
+
+
+What is DevOps?
+As per wikipedia:
+	Shorter Development Cycle
+	Continous Delivery (Speed)
+	High Quality Software (Stability)
+
+DevOps:
+	It is a "Culture" of Collaboration between Dev and Ops people.
+	This culture has given rise to set of "Practices".
+	DevOps is grassroot movement, by Practitioners, for the Practitioners
+
+DevOps is not
+	A Tool
+	A Standard
+	A Product
+	A Job title
+
+Why do we go for DevOps?
+	Dev and Ops work together to deliver robust and reliable Software Appln.
+	Automation, for consistency.
+	Good Monitoring, Swift Deployment process - fixing problems before users notice it
+	Happpier Teams
+	Happier Customers
+	
+DevOps Phases:
+	1. Build Automation
+		Depending on What languages are used, code needs to be:-
+			Compiled, linted, minified, transformed, unit tested, etc.
+		Build Automation means taking these Steps and doing them in a Consistent and Automated way using a script or tool.
+		-Java:- ant, maven, gradle
+		-JavaScript - gulp, grunt, npm
+	2. Continous Integration
+		The practice of frequently merging code from developers.
+		Merging constantly throughout the day
+		Automating this process so that developers should not spend their time in merging.
+		-Jenkins
+		-Traves CI
+		-Bamboo
+		-TeamCity
+	3. Continous Delivery and Continous Deployment
+		Continous Delivery: Maintaining the "Code in a Deployable State" - war/jar/ear.
+		Continous Deployment: Frequently deploying small code changes to the production.
+		-Jenkins
+		-Traves CI
+		-Bamboo
+		-TeamCity
+	4. Infrastructure as Code
+		Manage and Provision infrastructure through code and automation.
+		Like, Managing servers, VMs, Environment, Containers, etc.
+		-Docker (Application Infra - Libraries, App Dependencies, Software installation, etc)
+		-Terraform (Hardware/Virtual Hardware Infra - Provisioning VMs, Docker Swarm, Kubernetes Cluster, etc)
+	5. Configuration Management
+		Changes always need to happen - CM is about doing them in a mantainable way.
+		Maintaining changing state of pieces of infrastructure in a consistent, maintainable and stable way. 
+		-Chef
+		-Puppet
+		-Ansible
+		-Salt
+	6. Orchestration
+		Automation that supports processes and workflows, such as provisoning resources.
+		Managing a complex infra is less being a builder and more like conducting an Orchestra
+		Example:- Maintianing 5 replica of an App, When 1 goes down automaticall this creates a new instance bringing back the 5 count of replicas.
+		Maintaining the "Desired State".
+		-Kubernetes
+		-DockerSwarm
+		-Terraform
+		-Zookeeper
+		-Openshift
+	7. Monitoring
+		Collection and Presentation of data about the performance and stability of services and infrastructure.
+		Doing it continously on production gives following benefits:-
+			1. Fast Recovery from failure
+			2. Real-time notifications
+			3. Better root cause analysis
+			4. Automated response
+			5. Postmortem Analysis
+		-Splunk
+		-Zabbix
+		-New Relic
+		-Nagios
+		-ELK
+		-AppDynamics
+		-Prometheus and Grafana
+		-AWS Cloudwatch
+
+Microservices:
+	Breaking down a single large monolithic Application into pieces of services that do 1 job perfectly and making these pieces colloborate and communicate inorder to run the whole application.
+	It is an Architectural Design Principles
+		Loosely coupled services
+		Autonomous
+		Scalable
+		Independent services that are upgradable and replaceable
+
+
+-------------------------------------------------------------------------------------------------
+Why do you can't run 2 App in 1 VM/OS?
+
+	App1 App2
+	J11  J12
+	---------
+	PATH=J11;J12
+	---------
+	   OS
+	---------
+	 Machine
+
+"Application Isolation"
+
+
+Why do we need Virtualizations?
+
+	App1   App2
+	------------
+	P=J11 P=J12
+	-----------
+	VOS1  VOS2
+	-----------
+	VM1  VM2
+	-----------
+	Hypervisor
+	-----------
+	   OS
+	---------
+	 Machine
+
+Application Isolation is acheived but, with high end hardwares and CPUs and RAMs
+
+Why do we need Containers:
+
+	App1	 App2
+	----------------
+	PATH=J11 PATH=J12
+	-----------------
+	Container Engine <--------- Docker Engine (Containerd)/Rocket (Some Engine)
+ 	-----------------
+	 Kernel
+	-----------------
+	 Machine
+
+Application Isolation is acheived at cheaper rate
+
+
+---------------------------------------------------------------------------------------------------------------
+Docker Swarm:
+	Used to build distributed cluster where Containers can run across multiple servers.
+	
+	Swarm are made up of Managers and Workers nodes:-
+	Manager:
+		Responsible for Controlling and Orchestrating the Docker Swarm.
+		It delegates workloads to the worker nodes in the cluster.
+	Worker:
+		Responsible for Running Containers with Apps in it.	
+	
+
+	On Node, Who should be the Manager
+	docker swarm init --advertise-addr <Private IP>
+	
+	On Node, who should be the worker
+	docker swarm join --token <token-from-manager> <Manager_Private_IP>:2377
+
+
+Locking and Unlocking of Swarm Cluster:
+	Disabling and Enbaling Autolock feature of Swarm so that the sensitive data remains protected.
+
+	Enable Autolock:
+		docker swarm update --autolock=true
+
+		SWMKEY-1-4OfbteWqZ+VCl+5mT7QggfxJ4Dvcwys7lehKd0QFbhU
+		
+		docker node ls
+
+	Restart Machine
+		sudo systemctl restart docker
+		docker node ls
+
+	Unlock the Swarm
+		docker swarm unlock
+		
+	Enter Key(copy and paste from where you stored the key)
+		SWMKEY-1-4OfbteWqZ+VCl+5mT7QggfxJ4Dvcwys7lehKd0QFbhU
+
+		docker node ls
+		
+	Obtaining the existing unlock key
+		docker swarm unlock-key
+
+	Rotate the existing unlock key
+		docker swarm unlock-key --rotate
+
+	Disable autolock
+		docker swarm update --autolock=false
+		sudo systemctl restart docker
+		
+
+
+
+Docker Service:
+	Diff between docker service and docker run
+		docker run - creates and runs the container in the localhost
+		docker service - create and runs the container in swarm cluster, with replication.
+
+	docker service create --replicas=5 --name nginx-service -p 8080:80 nginx
+	docker service ls
+	docker service ps nginx-service
+	docker service update --relicas=10 nginx-service
+	docker service scale 15 nginx-service
+	docker service inspect nginx-service
+	docker service inspect --format='{{.Version.Index}}' nginx-service
+
+	
+
+Docker Compose:
+	Defining the containers as a set of unit and allowing to manage them easily.
+
+	Install Docket compose:
+		sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+	
+		sudo chmod +x /usr/local/bin/docker-compose
+	
+		docker-compose version
+
+Create your own compose yaml file:
+
+docker-compose.yml
+version: '3'
+services:
+  web:
+    image: nginx
+    ports:
+    - "8081:80"
+  redis:
+    image: redis:alpine
+
+
+
+
+Docker Stack:
+	Allows Swarm to orchestrate and manage complex multi-container apps
+
+simple-stack.yml
+version: "3"
+services:
+  web:
+    image: nginx
+  busybox:
+    image: radial/busyboxplus:curl
+    command: /bin/sh -c "While true; do echo Hello!; sleep 3600; done"
+
+
+
+
+
+Node Labels:-
+	docker node ls
+	
+	Adding a label to the node
+		docker node update --label-add availability_zone=east satyensingh1c.mylabserver.com
+		docker node update --label-add availability_zone=west satyensingh2c.mylabserver.com
+
+
+	docker node inspect --pretty satyensingh1c.mylabserver.com
+	docker node inspect --pretty satyensingh2c.mylabserver.com		
+
+	docker service create --name nginx-service-east --constraint node.labels.availability_zone==east --relicas=3 nginx
+	docker service create --name nginx-service-west --constraint node.labels.availability_zone==west --relicas=3 nginx
+
+	docker service ps nginx-service-east
+	docker service ps nginx-service-west
+
+---------------------------------------------------------------------------------------------------------------------
+
+Kubernetes:-
+
+Pods
+	running 1 or more containers
+
+	Configuring Pods
+	Passing Configuration Parameters
+
+
+Deployment
+	creating multiple replicas of pod
+	Updating the pod with new version of container
+	Rolling back the update in case of failure after update
+
+
+Services
+	Allow pods to talk to each other and user/client
+
+	Types of services:
+		NodePort
+			Allows pods to be accessible to the public using node's IP Address
+		ClusterIP
+			Let pods communicate within the cluster and not allowing public access
+
+		LoadBalancer
+			Apply cloud provided load balancer(ELB, etc...) to the publicly exposed pods
+
+Volumes, PV and PVCs
+	Volumes:- Persistent storage area
+		directory on host machine
+		Storage on cloud like AWS EBS, Azure Storage, etc...
+	Persistent Volumes:-
+		Pointer to the Volume
+	Persistent Volume Claims:-
+		proportion of volume claimed by pod for its storage purposes.
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+Infrastructure as Code:-
+
+Why?
+1. Lowers the cost
+2. Improvement of Speed
+3. Improves Stability and Security
+
+Terraform Configulartion Language(aka. HCL)
+
+Single Line Comment:-
+	Starts with "#"
+Multi-line comment:-
+	Starts with "/*"
+	Ends with "*/"
+Values are assigned with the syntax of:-
+	Key = Value
+Strings are in double in quotes:-
+	"This is String in HCL"
+Strings can interpolate other values using Syntax wrapped in ${}:-
+	"My Name is ${person.name}"
+Boolean values:
+	true, false
+Lists of primitive types cna be made with square brackets ([]):-
+	["foo","bar","baz"]
+Maps can be made with braces ({}) and colons (:):-
+	{"key1":"value1", "key2":"value2", "key3":"value3"}
+
+Style Conventions:-
+1. Indent two spaces for each nesting level.
+
+
+Downloading an docker image:-
+
+resource "docker_image" "my-nginx-image" {
+  name = "nginx:latest"
+}
+
+
+Downloading and Creating a Container
+resource "docker_image" "my-nginx-image" {
+  name = "nginx:latest"
+}
+
+resource "docker_container" "my-nginx-ctr" {
+  image = "${docker_image.my-nginx-image}"
+}
+
+
+terraform init
+
+terraform validate
+
+terraform apply
+
+terraform plan
+
+terraform show
+
+terraform destroy
+
+
+Tainting and Untainting resources:-
+taint: Manually mark a resource for recreation
+untaint: Manually unmark resource as tainted
+
+terraform taint [name]
+
+
+Output Variables:-
+resource "docker_image" "my-nginx-image" {
+  name = "nginx:latest"
+}
+
+resource "docker_container" "my-nginx-ctr" {
+  name = "nginx-ctr"
+  image = "${docker_image.my-nginx-image}"
+}
+
+output "container_name" {
+  value = "${docker_container.my-nginx-ctr.name}"
+  describe = "This is just any description"
+}
+
+Input Variables:-
+variable [name] {
+  type = [string/list/map]
+  default = [defalut value of the variable]
+  description = "[some description]"
+}
+
+
+
+Assignments:-
+Self-Study
+	Maps and Lookups
+	Terraform workspaces
+	Null Resources and Local exec
+Program
+	3 Assignments will be shared over the mail.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
