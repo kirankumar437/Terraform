@@ -36,3 +36,96 @@ Deploy the infrastructure
 Initialize Terraform.
 Generate a Terraform plan and output a plan file.
 Deploy the infrastructure using the plan file.
+
+
+
+mkdir module
+
+vi main.tf
+module "ghost" {
+  source = "./ghost"
+  image_name = "${var.image_name}"
+  container_name = "${var.container_name}"
+  ext_port = "${var.ext_port}"
+}
+
+
+vi variables.tf
+variable "image_name" {
+  default = "ghost:latest"
+}
+variable "container_name" {
+  default = "blog"
+}
+variable "ext_port" {
+  default = "80"
+}
+
+vi outputs.tf
+
+# output the IP Address of the Container
+output "ip_address" {
+  value       = "${module.ghost.ip_address}"
+  description = "The IP for the container."
+}
+
+output "container_name" {
+  value       = "${module.ghost.container_name}"
+  description = "The name of the container."
+}
+
+
+mkdir ghost
+vi main.tf
+
+# download the latest Ghost Image
+resource "docker_image" "image_id" {
+  name = "${var.image_name}"
+}
+
+# Start the Container
+resource "docker_container" "container_id" {
+  name  = "${var.container_name}"
+  image = "${docker_image.image_id.latest}"
+  ports {
+    internal = "2368"
+    external = "${var.ext_port}"
+ }
+}
+
+
+vi variables.tf
+
+variable "image_name" {
+  description = "Image for container."
+  default     = "ghost:latest"
+}
+
+variable "container_name" {
+  description = "Name of the container."
+  default     = "blog"
+}
+
+variable "ext_port" {
+  description = "External port for container."
+  default     = "80"
+}
+
+
+vi outputs.tf
+
+# output the IP Address of the Container
+output "ip_address" {
+  value       = "${docker_container.container_id.ip_address}"
+  description = "The IP for the container."
+}
+
+output "container_name" {
+  value       = "${docker_container.container_id.name}"
+  description = "The name of the container."
+}
+
+terraform init
+terraform validate
+terraform plan -out=tfplan
+terraform apply tfplan
