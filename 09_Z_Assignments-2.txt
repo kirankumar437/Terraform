@@ -77,3 +77,6 @@ terraform apply tfplan
 
 note:
 terraform apply -var 'container_name=ghost_blog_new' -var 'external_port=8080' 
+it will destory only one container in terrarorm
+
+terraform destroy -var container_name=ghost_blog
