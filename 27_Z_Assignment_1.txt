@@ -1,0 +1,37 @@
+Create variables.tf.
+In there, set these variables and arguments:
+	app_label: ghost-blog
+	int_port: 2368
+	ext_port: 8081
+	image_name: ghost:alpine
+	pod_name: ghost-blog
+
+Create and edit main.tf
+In that file, create a Kubernetes Service resource called ghost_service, and a Kubernetes Pod called ghost_blog.
+
+ghost_service Resource Settings
+Create a metadata block and set the name argument to ghost-service.
+Create a spec block.
+In the spec create a selector and port block.
+In the selector set the app argument to the app_label variable.
+In the port block set the following arguments:
+	port: int_port
+	target_port: int_port
+	node_port: ext_port
+	type: NodePort
+
+ghost_blog Resource Settings
+Create a metadata block with the following:
+	Set the name argument to ghost-pod
+	A labels block with the app argument set to the app_label variable.
+            Create a spec block.
+            In it, create a container block.
+            Set these arguments in the container block:
+	image: image_name
+	name: pod_name
+
+Create a port block, in the container block, with a container_port argument set to the int_port variable.
+Deploy the infrastructure
+	Initialize Terraform.
+	Validate your code.
+	Deploy the infrastructure using the plan file.
